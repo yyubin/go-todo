@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strconv"
 	"testing"
+	"todo/model"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -21,7 +22,7 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, res.StatusCode)
 
-	var todo Todo
+	var todo model.Todo
 	err = json.NewDecoder(res.Body).Decode(&todo)
 	assert.NoError(err)
 	assert.Equal(todo.Name, "Test todo")
@@ -32,7 +33,7 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, res2.StatusCode)
 
-	var todo2 Todo
+	var todo2 model.Todo
 	err = json.NewDecoder(res2.Body).Decode(&todo2)
 	assert.NoError(err)
 
@@ -42,7 +43,7 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, resp.StatusCode)
 
-	todos := []*Todo{}
+	todos := []*model.Todo{}
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	assert.NoError(err)
 	assert.Equal(len(todos), 2)
@@ -65,7 +66,7 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, resp.StatusCode)
 
-	todos = []*Todo{}
+	todos = []*model.Todo{}
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	assert.NoError(err)
 	assert.Equal(len(todos), 2)
@@ -89,7 +90,7 @@ func TestTodos(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, resp.StatusCode)
 
-	todos = []*Todo{}
+	todos = []*model.Todo{}
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	assert.NoError(err)
 	assert.Equal(len(todos), 1)
