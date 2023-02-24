@@ -71,15 +71,15 @@ func completeTodoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addTestTodos() {
-	todoMap[1] = &Todo{1, "Buy a milk", false, time.Now()}
-	todoMap[2] = &Todo{2, "Excercise", false, time.Now()}
-	todoMap[3] = &Todo{2, "Homework", true, time.Now()}
-}
+// func addTestTodos() {
+// 	todoMap[1] = &Todo{1, "Buy a milk", false, time.Now()}
+// 	todoMap[2] = &Todo{2, "Excercise", false, time.Now()}
+// 	todoMap[3] = &Todo{2, "Homework", true, time.Now()}
+// }
 
 func MakeHandler() http.Handler {
 	todoMap = make(map[int]*Todo)
-	addTestTodos()
+	// addTestTodos()
 
 	rd = render.New()
 	r := mux.NewRouter()
