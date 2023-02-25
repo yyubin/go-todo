@@ -17,12 +17,11 @@ func (s *sqliteHandler) Close() {
 
 func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 	todos := []*Todo{}
-	rows, err := s.db.Query("SELECT id, name, completed, createdAt FROM todos WHERE sessionId = ?", sessionId)
+	rows, err := s.db.Query("SELECT id, name, completed, createdAt FROM todos WHERE sessionId=?", sessionId)
 	if err != nil {
 		panic(err)
 	}
 	defer rows.Close()
-
 	for rows.Next() {
 		var todo Todo
 		rows.Scan(&todo.ID, &todo.Name, &todo.Completed, &todo.CreatedAt)
@@ -31,12 +30,11 @@ func (s *sqliteHandler) GetTodos(sessionId string) []*Todo {
 	return todos
 }
 
-func (s *sqliteHandler) AddTodo(sessionId string, name string) *Todo {
+func (s *sqliteHandler) AddTodo(name string, sessionId string) *Todo {
 	stmt, err := s.db.Prepare("INSERT INTO todos (sessionId, name, completed, createdAt) VALUES (?, ?, ?, datetime('now'))")
 	if err != nil {
 		panic(err)
 	}
-
 	rst, err := stmt.Exec(sessionId, name, false)
 	if err != nil {
 		panic(err)
@@ -94,9 +92,10 @@ func newSqliteHandler(filepath string) DBHandler {
 			completed BOOLEAN,
 			createdAt DATETIME
 		);
-		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos(
-			session_id ASC
-		);`) //sessionId로 서칭트리만들기, index로 검색시 nlogn으로 검색가능
+		CREATE INDEX IF NOT EXISTS sessionIdIndexOnTodos ON todos (
+			sessionId ASC
+		);`)
+	//sessionId로 서칭트리만들기, index로 검색시 nlogn으로 검색가능
 	// where절에 들어가는 경우 웬만하면 인덱싱해주기
 
 	statement.Exec()

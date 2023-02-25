@@ -26,11 +26,12 @@ var getSessionID = func(r *http.Request) string {
 	if err != nil {
 		return ""
 	}
+
+	// Set some session values.
 	val := session.Values["id"]
 	if val == nil {
 		return ""
 	}
-
 	return val.(string)
 }
 
@@ -47,7 +48,7 @@ func (a *AppHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) 
 func (a *AppHandler) addTodoHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := getSessionID(r)
 	name := r.FormValue("name")
-	todo := a.db.AddTodo(sessionId, name)
+	todo := a.db.AddTodo(name, sessionId)
 	rd.JSON(w, http.StatusOK, todo)
 }
 
@@ -86,23 +87,30 @@ func (a *AppHandler) Close() {
 	a.db.Close()
 }
 
-func CheckSignin(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func CheckSignin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	// 공용 페이지 요청시 next
-	if strings.Contains(r.URL.Path, "/signin.html") || strings.Contains(r.URL.Path, "/auth") {
-		next(rw, r)
+	if strings.Contains(r.URL.Path, "/signin") ||
+		strings.Contains(r.URL.Path, "/auth") {
+		next(w, r)
+		return
 	}
 	// 이미 로그인한 유저
 	sessionID := getSessionID(r)
 	if sessionID != "" {
-		next(rw, r)
+		next(w, r)
+		return
 	}
 	// 로그인 안된 유저
-	http.Redirect(rw, r, "/signin.html", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/signin.html", http.StatusTemporaryRedirect)
 }
 
 func MakeHandler(filepath string) *AppHandler {
 	r := mux.NewRouter()
-	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.HandlerFunc(CheckSignin), negroni.NewStatic(http.Dir("public"))) // chain
+	n := negroni.New(
+		negroni.NewRecovery(),
+		negroni.NewLogger(),
+		negroni.HandlerFunc(CheckSignin),
+		negroni.NewStatic(http.Dir("public")))
 	n.UseHandler(r)
 
 	a := &AppHandler{
