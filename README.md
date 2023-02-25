@@ -2,6 +2,8 @@
 
 It's a todo list made of Golang.
 
+Log in with Google to use the todo!
+
 ### Tools
 
 https://getbootstrap.com
