@@ -12,6 +12,11 @@ https://github.com/urfave/negroni
 
 https://github.com/gorilla/mux
 
+https://github.com/mattn/go-sqlite3
+
+https://github.com/gorilla/sessions
+
+
 
 ### References
 

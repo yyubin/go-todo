@@ -15,6 +15,10 @@ import (
 )
 
 func TestTodos(t *testing.T) {
+	getSessionID = func(r *http.Request) string { //테스트코드에서 세션검사 건너뛰기
+		return "testsessionidtestsessionid"
+	}
+
 	os.Remove("./test.db")
 
 	assert := assert.New(t)
